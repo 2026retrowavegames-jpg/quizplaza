@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Political Compass — QuizPlaza</title>
+  <meta name="description" content="Find out where you stand on the 2D political compass. Are you left or right, authoritarian or libertarian?">
+  <link rel="canonical" href="https://2026retrowavegames-jpg.github.io/quizplaza/political-compass/">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-back {
+      color: #999;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s;
+    }
+
+    .nav-back:hover { color: #3b6ff5; }
+
+    .nav-sep { color: #ddd; font-size: 18px; }
+
+    .nav-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      color: #1a1a1a;
+    }
+
+    /* SCREENS */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── INTRO ── */
+    #intro {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 64px 24px 80px;
+      text-align: center;
+    }
+
+    .quiz-icon {
+      font-size: 56px;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    #intro h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 400;
+      margin-bottom: 16px;
+    }
+
+    #intro p {
+      font-size: 17px;
+      color: #666;
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+
+    .info-pills {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 28px 0 36px;
+    }
+
+    .pill {
+      background: #f0f4ff;
+      color: #3b6ff5;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: #3b6ff5;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 14px 40px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover { background: #2f5edb; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      display: inline-block;
+      background: #fff;
+      color: #3b6ff5;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 32px;
+      border-radius: 8px;
+      border: 1.5px solid #3b6ff5;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+    }
+
+    .btn-secondary:hover { background: #f0f4ff; }
+
+    /* ── QUIZ ── */
+    #quiz {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 100px;
+    }
+
+    .progress-wrap {
+      margin-bottom: 36px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: #e5e5e5;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #3b6ff5;
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .question-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 28px 24px;
+      margin-bottom: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .question-card.unanswered {
+      border-color: #f87171;
+      background: #fff8f8;
+    }
+
+    .q-number {
+      font-size: 12px;
+      font-weight: 700;
+      color: #bbb;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .q-text {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.55;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .option-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .option-label input { display: none; }
+
+    .option-btn {
+      width: 100%;
+      text-align: center;
+      padding: 10px 4px;
+      border-radius: 8px;
+      border: 1.5px solid #e5e5e5;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+      background: #fafafa;
+      cursor: pointer;
+      transition: all 0.12s;
+      line-height: 1.3;
+      user-select: none;
+    }
+
+    .option-label input:checked + .option-btn {
+      background: #3b6ff5;
+      border-color: #3b6ff5;
+      color: #fff;
+    }
+
+    .option-label:hover .option-btn {
+      border-color: #3b6ff5;
+      color: #3b6ff5;
+      background: #f0f4ff;
+    }
+
+    .option-label input:checked + .option-btn:hover {
+      background: #2f5edb;
+      color: #fff;
+    }
+
+    .submit-wrap {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .error-msg {
+      color: #ef4444;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* ── RESULTS ── */
+    #results {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      text-align: center;
+    }
+
+    #results h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: #999;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .result-label {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 400;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .result-coords {
+      font-size: 13px;
+      color: #aaa;
+      font-weight: 600;
+      margin-bottom: 40px;
+      letter-spacing: 0.05em;
+    }
+
+    .compass-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
+    canvas#compass {
+      border-radius: 4px;
+    }
+
+    .result-desc-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 28px;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+
+    .result-desc-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 10px;
+    }
+
+    .result-desc-card p {
+      font-size: 16px;
+      color: #444;
+      line-height: 1.65;
+    }
+
+    .scores-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .score-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+    }
+
+    .score-card .sc-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
+
+    .score-card .sc-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      color: #1a1a1a;
+      margin-bottom: 2px;
+    }
+
+    .score-card .sc-sub {
+      font-size: 13px;
+      color: #999;
+      font-weight: 500;
+    }
+
+    .result-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 500px) {
+      .options {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .scores-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← QuizPlaza</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-title">Political Compass</span>
+</nav>
+
+<!-- INTRO SCREEN -->
+<div id="intro" class="screen active">
+  <span class="quiz-icon">🧭</span>
+  <h1>Political Compass</h1>
+  <p>Answer 24 statements to find out where you fall on the two-dimensional political map — from left to right economically, and from authoritarian to libertarian socially.</p>
+  <p style="margin-top:8px; font-size:15px; color:#aaa;">There are no right or wrong answers.</p>
+  <div class="info-pills">
+    <span class="pill">⏱ ~5 minutes</span>
+    <span class="pill">📋 24 questions</span>
+    <span class="pill">🆓 Free</span>
+  </div>
+  <button class="btn-primary" onclick="startQuiz()">Start Quiz →</button>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="quiz" class="screen">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Progress</span>
+      <span id="progress-count">0 / 24 answered</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div id="questions-container"></div>
+
+  <div class="submit-wrap">
+    <p class="error-msg" id="error-msg">⚠ Please answer all questions before submitting.</p>
+    <button class="btn-primary" onclick="submitQuiz()">See My Results →</button>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div id="results" class="screen">
+  <h2>Your result</h2>
+  <div class="result-label" id="result-label"></div>
+  <div class="result-coords" id="result-coords"></div>
+
+  <div class="compass-wrap">
+    <canvas id="compass" width="360" height="360"></canvas>
+  </div>
+
+  <div class="scores-grid">
+    <div class="score-card">
+      <div class="sc-label">Economic Axis</div>
+      <div class="sc-value" id="score-economic"></div>
+      <div class="sc-sub" id="score-economic-label"></div>
+    </div>
+    <div class="score-card">
+      <div class="sc-label">Social Axis</div>
+      <div class="sc-value" id="score-social"></div>
+      <div class="sc-sub" id="score-social-label"></div>
+    </div>
+  </div>
+
+  <div class="result-desc-card">
+    <h3>What this means</h3>
+    <p id="result-desc"></p>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn-secondary" onclick="retakeQuiz()">↺ Retake Quiz</button>
+    <a href="index.html" class="btn-secondary">← All Quizzes</a>
+  </div>
+</div>
+
+<script>
+  // ── QUESTIONS ──────────────────────────────────────────────────────────────
+  // axis: 'e' = economic, 's' = social
+  // dir:  +1 = right/authoritarian, -1 = left/libertarian
+  const QUESTIONS = [
+    // Economic
+    { text: "The free market is the most efficient mechanism for distributing goods and services in society.", axis: 'e', dir: 1 },
+    { text: "Private businesses generally serve society better than state-run enterprises.", axis: 'e', dir: 1 },
+    { text: "Government regulation of businesses often does more harm than good.", axis: 'e', dir: 1 },
+    { text: "Free trade between nations ultimately benefits ordinary working people.", axis: 'e', dir: 1 },
+    { text: "Economic inequality is a natural outcome of differences in individual talent and effort.", axis: 'e', dir: 1 },
+    { text: "Competition between private companies drives innovation better than public programs.", axis: 'e', dir: 1 },
+    { text: "The government should provide universal healthcare free at the point of use.", axis: 'e', dir: -1 },
+    { text: "High taxes on the wealthy are necessary to adequately fund public services.", axis: 'e', dir: -1 },
+    { text: "Trade unions play an essential role in protecting workers from exploitation.", axis: 'e', dir: -1 },
+    { text: "A universal basic income would improve quality of life for most people.", axis: 'e', dir: -1 },
+    { text: "Large inheritances should be taxed heavily to reduce the concentration of wealth.", axis: 'e', dir: -1 },
+    { text: "Publicly funded education should be available free of charge through university level.", axis: 'e', dir: -1 },
+    // Social
+    { text: "A strong central government is necessary to maintain order and stability in society.", axis: 's', dir: 1 },
+    { text: "The death penalty is an appropriate punishment for the most serious crimes.", axis: 's', dir: 1 },
+    { text: "Governments are sometimes justified in restricting civil liberties to ensure national security.", axis: 's', dir: 1 },
+    { text: "Stricter immigration controls are necessary to protect national culture and identity.", axis: 's', dir: 1 },
+    { text: "Traditional values and institutions should be preserved against rapid social change.", axis: 's', dir: 1 },
+    { text: "Society functions better when people conform to established norms and customs.", axis: 's', dir: 1 },
+    { text: "Drug use is a personal choice and should not be treated as a criminal matter.", axis: 's', dir: -1 },
+    { text: "People should be free to live however they choose, as long as they don't harm others.", axis: 's', dir: -1 },
+    { text: "Freedom of expression should be legally protected even when the content is offensive to many.", axis: 's', dir: -1 },
+    { text: "Personal lifestyle choices, including sexual orientation, should never be subject to legislation.", axis: 's', dir: -1 },
+    { text: "Government surveillance of citizens is rarely, if ever, justified.", axis: 's', dir: -1 },
+    { text: "Harsher criminal punishments do not effectively deter crime.", axis: 's', dir: -1 },
+  ];
+
+  const OPTIONS = [
+    { label: "Strongly Agree",    value: 2  },
+    { label: "Agree",             value: 1  },
+    { label: "Disagree",          value: -1 },
+    { label: "Strongly Disagree", value: -2 },
+  ];
+
+  let shuffled = [];
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function startQuiz() {
+    shuffled = shuffle(QUESTIONS);
+    buildQuestions();
+    showScreen('quiz');
+  }
+
+  function buildQuestions() {
+    const container = document.getElementById('questions-container');
+    container.innerHTML = '';
+    shuffled.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.id = `card-${i}`;
+
+      const optionsHtml = OPTIONS.map(o => `
+        <label class="option-label">
+          <input type="radio" name="q${i}" value="${o.value}" onchange="updateProgress()">
+          <span class="option-btn">${o.label}</span>
+        </label>
+      `).join('');
+
+      card.innerHTML = `
+        <div class="q-number">Question ${i + 1} of ${shuffled.length}</div>
+        <div class="q-text">${q.text}</div>
+        <div class="options">${optionsHtml}</div>
+      `;
+      container.appendChild(card);
+    });
+    updateProgress();
+  }
+
+  function updateProgress() {
+    let answered = 0;
+    shuffled.forEach((_, i) => {
+      if (document.querySelector(`input[name="q${i}"]:checked`)) answered++;
+    });
+    const pct = (answered / shuffled.length) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-count').textContent = `${answered} / ${shuffled.length} answered`;
+  }
+
+  function submitQuiz() {
+    // Validate all answered
+    let unanswered = [];
+    shuffled.forEach((_, i) => {
+      const card = document.getElementById(`card-${i}`);
+      if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+        unanswered.push(i);
+        card.classList.add('unanswered');
+      } else {
+        card.classList.remove('unanswered');
+      }
+    });
+
+    if (unanswered.length > 0) {
+      document.getElementById('error-msg').style.display = 'block';
+      document.getElementById(`card-${unanswered[0]}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    document.getElementById('error-msg').style.display = 'none';
+
+    // Calculate scores
+    let eScore = 0, sScore = 0;
+    shuffled.forEach((q, i) => {
+      const val = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value);
+      if (q.axis === 'e') eScore += val * q.dir;
+      else sScore += val * q.dir;
+    });
+
+    // Normalize to -10 to +10
+    const maxE = 12 * 2; // 12 economic questions, max 2 each
+    const maxS = 12 * 2;
+    const normE = parseFloat((eScore / maxE * 10).toFixed(2));
+    const normS = parseFloat((sScore / maxS * 10).toFixed(2));
+
+    showResults(normE, normS);
+  }
+
+  function showResults(x, y) {
+    // x: -10 (left) to +10 (right)
+    // y: -10 (lib) to +10 (auth)
+
+    const quadrant = getQuadrant(x, y);
+
+    document.getElementById('result-label').textContent = quadrant.label;
+    document.getElementById('result-coords').textContent =
+      `Economic: ${x > 0 ? '+' : ''}${x}  ·  Social: ${y > 0 ? '+' : ''}${y}`;
+    document.getElementById('result-desc').textContent = quadrant.desc;
+
+    const absX = Math.abs(x);
+    const absY = Math.abs(y);
+
+    document.getElementById('score-economic').textContent =
+      (x > 0 ? '+' : '') + x;
+    document.getElementById('score-economic-label').textContent =
+      x > 5 ? 'Strong Economic Right' :
+      x > 1 ? 'Economic Right' :
+      x > -1 ? 'Economic Centre' :
+      x > -5 ? 'Economic Left' : 'Strong Economic Left';
+
+    document.getElementById('score-social').textContent =
+      (y > 0 ? '+' : '') + y;
+    document.getElementById('score-social-label').textContent =
+      y > 5 ? 'Strong Authoritarian' :
+      y > 1 ? 'Authoritarian' :
+      y > -1 ? 'Social Centre' :
+      y > -5 ? 'Libertarian' : 'Strong Libertarian';
+
+    showScreen('results');
+    drawCompass(x, y);
+  }
+
+  function getQuadrant(x, y) {
+    if (x >= 0 && y >= 0) return {
+      label: "Authoritarian Right",
+      desc: "You lean toward free markets economically while also favoring strong authority and social order. This quadrant is associated with traditional conservatism, nationalism, and right-wing authoritarianism. You likely believe that strong institutions and cultural continuity are essential to a well-functioning society."
+    };
+    if (x < 0 && y >= 0) return {
+      label: "Authoritarian Left",
+      desc: "You favor economic equality and redistribution, but also believe in strong government authority to enforce social order. This quadrant is associated with socialist and communist ideologies. You likely think that the state has an important role in shaping both the economy and society toward collective goals."
+    };
+    if (x >= 0 && y < 0) return {
+      label: "Libertarian Right",
+      desc: "You favor free markets and minimal government interference in both economic and personal life. This quadrant is associated with classical liberalism and libertarianism. You likely believe that individual freedom — in lifestyle choices and economic activity alike — produces the best outcomes for society."
+    };
+    return {
+      label: "Libertarian Left",
+      desc: "You favor economic equality while also strongly opposing state authority in personal matters. This quadrant is associated with anarchism, libertarian socialism, and social democracy. You likely believe that people should be free from both corporate exploitation and government overreach."
+    };
+  }
+
+  function drawCompass(x, y) {
+    const canvas = document.getElementById('compass');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    const H = canvas.height;
+    const cx = W / 2;
+    const cy = H / 2;
+    const scale = (W * 0.42) / 10; // pixels per unit
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Quadrant fills
+    const colors = {
+      NE: '#fde8e8', // auth right — light red
+      NW: '#e8eeff', // auth left — light blue
+      SW: '#e8f5e8', // lib left — light green
+      SE: '#fff9e8', // lib right — light yellow
+    };
+
+    ctx.fillStyle = colors.NW;
+    ctx.fillRect(0, 0, cx, cy);
+    ctx.fillStyle = colors.NE;
+    ctx.fillRect(cx, 0, cx, cy);
+    ctx.fillStyle = colors.SW;
+    ctx.fillRect(0, cy, cx, cy);
+    ctx.fillStyle = colors.SE;
+    ctx.fillRect(cx, cy, cx, cy);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+    ctx.lineWidth = 1;
+    for (let v = -8; v <= 8; v += 2) {
+      if (v === 0) continue;
+      const px = cx + v * scale;
+      ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, H); ctx.stroke();
+      const py = cy - v * scale;
+      ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(W, py); ctx.stroke();
+    }
+
+    // Axis lines
+    ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
+
+    // Border
+    ctx.strokeStyle = '#e5e5e5';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0, 0, W, H);
+
+    // Labels
+    ctx.font = '700 12px DM Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#444';
+    ctx.fillText('AUTHORITARIAN', cx, 18);
+    ctx.fillText('LIBERTARIAN', cx, H - 6);
+    ctx.save();
+    ctx.translate(14, cy);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('LEFT', 0, 0);
+    ctx.restore();
+    ctx.save();
+    ctx.translate(W - 14, cy);
+    ctx.rotate(Math.PI / 2);
+    ctx.fillText('LEFT', 0, 0);  // will show as RIGHT due to rotation
+    ctx.restore();
+    ctx.save();
+    ctx.translate(W - 14, cy);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('RIGHT', 0, 0);
+    ctx.restore();
+
+    // Quadrant labels (small)
+    ctx.font = '500 10px DM Sans, sans-serif';
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.textAlign = 'center';
+    ctx.fillText('Auth. Left', cx / 2, cy / 2);
+    ctx.fillText('Auth. Right', cx + cx / 2, cy / 2);
+    ctx.fillText('Lib. Left', cx / 2, cy + cy / 2);
+    ctx.fillText('Lib. Right', cx + cx / 2, cy + cy / 2);
+
+    // User dot
+    const dotX = cx + x * scale;
+    const dotY = cy - y * scale;
+
+    // Glow
+    const grad = ctx.createRadialGradient(dotX, dotY, 0, dotX, dotY, 20);
+    grad.addColorStop(0, 'rgba(59,111,245,0.3)');
+    grad.addColorStop(1, 'rgba(59,111,245,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 20, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Dot
+    ctx.fillStyle = '#3b6ff5';
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function retakeQuiz() {
+    showScreen('intro');
+  }
+</script>
+
+</body>
+</html>
