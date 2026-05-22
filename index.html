@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizPlaza — Political & Personality Tests</title>
+  <meta name="description" content="Free political compass, personality type, ideology, and moral foundations quizzes. Find out who you really are.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="QuizPlaza — Political & Personality Tests">
+  <meta property="og:description" content="Free quizzes to find out where you stand politically and who you really are.">
+  <meta property="og:url" content="https://2026retrowavegames-jpg.github.io/quizplaza/">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="QuizPlaza — Political & Personality Tests">
+  <meta name="twitter:description" content="Free quizzes. Find out where you stand.">
+
+  <link rel="canonical" href="https://2026retrowavegames-jpg.github.io/quizplaza/">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      height: 60px;
+    }
+
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: #1a1a1a;
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: #3b6ff5; }
+
+    /* HERO */
+    .hero {
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 64px 32px 56px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 400;
+      line-height: 1.15;
+      color: #1a1a1a;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #666;
+      font-weight: 400;
+      max-width: 480px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+
+    .hero-count {
+      display: inline-block;
+      background: #f0f4ff;
+      color: #3b6ff5;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 999px;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .section-header h2 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #999;
+    }
+
+    /* GRID */
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+      margin-bottom: 56px;
+    }
+
+    /* CARD */
+    .quiz-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    }
+
+    a.quiz-card:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border-color: #ccc;
+      transform: translateY(-2px);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .card-emoji {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .card-badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f0f4ff;
+      color: #3b6ff5;
+    }
+
+    .card-badge.politics  { background: #eef5ff; color: #2563eb; }
+    .card-badge.personality { background: #fdf0ff; color: #9333ea; }
+    .card-badge.morality  { background: #fff7ed; color: #ea580c; }
+    .card-badge.geo       { background: #f0fdf4; color: #16a34a; }
+
+    .quiz-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+
+    .quiz-card p {
+      font-size: 14px;
+      color: #777;
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    .card-footer .take {
+      color: #3b6ff5;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-footer .take::after {
+      content: '→';
+    }
+
+    /* COMING SOON CARD */
+    .quiz-card.soon {
+      opacity: 0.6;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .soon-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f5f5f5;
+      color: #999;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 13px;
+      color: #bbb;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    footer a {
+      color: #999;
+      text-decoration: none;
+    }
+
+    footer a:hover { color: #3b6ff5; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 40px 20px; }
+      main { padding: 32px 20px 60px; }
+      nav { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="." class="nav-logo">Quiz<span>Plaza</span></a>
+</nav>
+
+<div class="hero">
+  <h1>Know yourself.<br>Know your politics.</h1>
+  <p>Free tests to find out where you stand — politically, morally, and personally.</p>
+  <span class="hero-count">6 quizzes · all free</span>
+</div>
+
+<main>
+
+  <div class="section-header">
+    <h2>Available now</h2>
+  </div>
+
+  <div class="quiz-grid">
+
+    <a href="political-compass/" class="quiz-card">
+      <div class="card-top">
+        <span class="card-emoji">🧭</span>
+        <span class="card-badge politics">Politics</span>
+      </div>
+      <h3>Political Compass</h3>
+      <p>Are you left, right, authoritarian, or libertarian? Plot yourself on the classic 2D political map.</p>
+      <div class="card-footer">
+        <span>⏱ ~5 min · 40 questions</span>
+        <span class="take">Take it</span>
+      </div>
+    </a>
+
+    <a href="personality-type/" class="quiz-card">
+      <div class="card-top">
+        <span class="card-emoji">🧠</span>
+        <span class="card-badge personality">Personality</span>
+      </div>
+      <h3>Personality Type</h3>
+      <p>Introvert or extrovert? Thinker or feeler? Find your 4-letter personality type.</p>
+      <div class="card-footer">
+        <span>⏱ ~8 min · 60 questions</span>
+        <span class="take">Take it</span>
+      </div>
+    </a>
+
+    <a href="ideology/" class="quiz-card">
+      <div class="card-top">
+        <span class="card-emoji">🗳️</span>
+        <span class="card-badge politics">Politics</span>
+      </div>
+      <h3>Ideology Sorter</h3>
+      <p>Liberal, conservative, socialist, libertarian? Go beyond left and right.</p>
+      <div class="card-footer">
+        <span>⏱ ~6 min · 50 questions</span>
+        <span class="take">Take it</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-header">
+    <h2>Coming soon</h2>
+  </div>
+
+  <div class="quiz-grid">
+
+    <div class="quiz-card soon">
+      <div class="card-top">
+        <span class="card-emoji">⚖️</span>
+        <span class="soon-label">Soon</span>
+      </div>
+      <h3>Moral Foundations</h3>
+      <p>What values drive your moral decisions? Care, fairness, loyalty, authority, or purity?</p>
+      <div class="card-footer">
+        <span>⏱ ~5 min · 36 questions</span>
+      </div>
+    </div>
+
+    <div class="quiz-card soon">
+      <div class="card-top">
+        <span class="card-emoji">🌊</span>
+        <span class="soon-label">Soon</span>
+      </div>
+      <h3>Big Five (OCEAN)</h3>
+      <p>The gold standard in psychology. Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism.</p>
+      <div class="card-footer">
+        <span>⏱ ~7 min · 44 questions</span>
+      </div>
+    </div>
+
+    <div class="quiz-card soon">
+      <div class="card-top">
+        <span class="card-emoji">🌍</span>
+        <span class="soon-label">Soon</span>
+      </div>
+      <h3>Geopolitical Alignment</h3>
+      <p>NATO or BRICS? West or East? Find out where you'd sit on the global power map.</p>
+      <div class="card-footer">
+        <span>⏱ ~6 min · 45 questions</span>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  QuizPlaza · All tests are for entertainment purposes ·
+  <a href="https://github.com/2026retrowavegames-jpg/quizplaza" target="_blank" rel="noopener">GitHub</a>
+</footer>
+
+</body>
+</html>

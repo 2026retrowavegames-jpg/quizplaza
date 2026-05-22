@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://2026retrowavegames-jpg.github.io/quizplaza/sitemap.xml
